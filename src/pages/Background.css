@@ -114,10 +114,10 @@
 /* ─── Arc Dial ──────────────────────────── */
 .arc-dial {
   position: absolute;
-  left: 4%;
+  left: 3%;
   top: 6%;
   bottom: 14%;
-  width: 90px;
+  width: 150px;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -158,6 +158,16 @@
 .arc-marker {
   fill: #4a5568;
   transition: r 0.3s ease, opacity 0.3s ease, fill 0.3s ease;
+}
+
+/* Year labels on the arc */
+.arc-year-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: #8a9ab5;
+  opacity: 0.2;
+  transition: opacity 0.3s ease, fill 0.3s ease;
+  pointer-events: none;
 }
 
 /* Active indicator (glowing dot) */
@@ -202,7 +212,7 @@
 /* ─── Timeline Cards ────────────────────── */
 .timeline-cards-container {
   position: relative;
-  margin-left: 16%;
+  margin-left: 24%;
   width: 52%;
   height: 100%;
   display: flex;
@@ -223,11 +233,12 @@
   padding: 2rem 2.2rem;
   color: #fff;
   will-change: transform, opacity, filter;
+  transform-origin: left center;
   transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .timeline-card.active {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(200, 200, 200, 0.2);
   border-color: rgba(200, 168, 78, 0.35);
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.25),
@@ -330,8 +341,21 @@
 
 .progress-track {
   flex: 1;
-  height: 1px;
+  height: 2px;
   background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  border-radius: 1px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  box-shadow: 0 0 6px rgba(200, 168, 78, 0.4);
 }
 
 /* ─── Projects Section ──────────────────── */
@@ -452,7 +476,7 @@
 @media (max-width: 1024px) {
   .arc-dial {
     left: 2%;
-    width: 70px;
+    width: 90px;
   }
 
   .timeline-cards-container {
@@ -482,6 +506,7 @@
 
   .timeline-card {
     padding: 1.5rem;
+    transform-origin: center;
   }
 
   .timeline-progress-bar {

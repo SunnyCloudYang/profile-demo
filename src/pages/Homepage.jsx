@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
@@ -41,6 +41,11 @@ const socialIconMap = {
 }
 
 const Homepage = () => {
+  useEffect(() => {
+    const id = setTimeout(() => ScrollTrigger.refresh(), 100)
+    return () => clearTimeout(id)
+  }, [])
+
   return (
     <div className="homepage">
       <HeroSection />
@@ -135,14 +140,16 @@ const AboutSection = () => {
         y: 40,
         opacity: 0,
         duration: 0.8,
-        scrollTrigger: { trigger: '.about-text', start: 'top 85%' },
+        immediateRender: false,
+        scrollTrigger: { trigger: '.about-text', start: 'top 88%' },
       })
       gsap.from('.about-details .detail-item', {
         x: 30,
         opacity: 0,
         duration: 0.6,
         stagger: 0.1,
-        scrollTrigger: { trigger: '.about-details', start: 'top 85%' },
+        immediateRender: false,
+        scrollTrigger: { trigger: '.about-details', start: 'top 88%' },
       })
     },
     { scope: sectionRef }
@@ -196,7 +203,8 @@ const InterestsSection = () => {
         opacity: 0,
         duration: 0.6,
         stagger: 0.1,
-        scrollTrigger: { trigger: '.interests-grid', start: 'top 82%' },
+        immediateRender: false,
+        scrollTrigger: { trigger: '.interests-grid', start: 'top 88%' },
       })
     },
     { scope: sectionRef }
@@ -237,7 +245,8 @@ const AchievementsSection = () => {
         opacity: 0,
         duration: 0.6,
         stagger: 0.12,
-        scrollTrigger: { trigger: '.achievements-list', start: 'top 80%' },
+        immediateRender: false,
+        scrollTrigger: { trigger: '.achievements-list', start: 'top 88%' },
       })
     },
     { scope: sectionRef }
@@ -280,7 +289,8 @@ const NewsSection = () => {
         opacity: 0,
         duration: 0.5,
         stagger: 0.1,
-        scrollTrigger: { trigger: '.news-list', start: 'top 85%' },
+        immediateRender: false,
+        scrollTrigger: { trigger: '.news-list', start: 'top 88%' },
       })
     },
     { scope: sectionRef }

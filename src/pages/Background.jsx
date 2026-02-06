@@ -60,9 +60,11 @@ const ArcDialTimeline = () => {
   const arcProgressRef = useRef(null)
   const indicatorRef = useRef(null)
   const markerRefs = useRef([])
+  const arcYearLabelRefs = useRef([])
   const bgRefs = useRef([])
   const yearLabelRef = useRef(null)
   const yearSubRef = useRef(null)
+  const progressFillRef = useRef(null)
 
   const setCardRef = useCallback((el, i) => {
     cardRefs.current[i] = el
@@ -70,6 +72,10 @@ const ArcDialTimeline = () => {
 
   const setMarkerRef = useCallback((el, i) => {
     markerRefs.current[i] = el
+  }, [])
+
+  const setArcYearRef = useCallback((el, i) => {
+    arcYearLabelRefs.current[i] = el
   }, [])
 
   const setBgRef = useCallback((el, i) => {
@@ -82,7 +88,7 @@ const ArcDialTimeline = () => {
       if (N === 0) return
 
       /* Arc geometry parameters */
-      const ARC_RADIUS = 800
+      const ARC_RADIUS = 1000
       const ANGLE_STEP = 0.24
       const CARD_SPACING = 220
       const vh = window.innerHeight
@@ -98,13 +104,18 @@ const ArcDialTimeline = () => {
         arcProgress.style.strokeDashoffset = pathLength
       }
 
-      /* Position SVG markers along the arc path */
+      /* Position SVG markers and year labels along the arc path */
       if (arcTrack) {
         markerRefs.current.forEach((marker, i) => {
           if (!marker) return
           const t = N > 1 ? i / (N - 1) : 0
           const point = arcTrack.getPointAtLength(t * pathLength)
           gsap.set(marker, { attr: { cx: point.x, cy: point.y } })
+
+          const yearLabel = arcYearLabelRefs.current[i]
+          if (yearLabel) {
+            gsap.set(yearLabel, { attr: { x: point.x + 14, y: point.y + 4 } })
+          }
         })
       }
 
@@ -135,11 +146,13 @@ const ArcDialTimeline = () => {
         end: () => `+=${(N + 1) * vh}px`,
         pin: true,
         anticipatePin: 1,
-        scrub: 0.6,
+        scrub: true,
         snap: {
           snapTo: 1 / (N - 1),
-          duration: { min: 0.2, max: 0.5 },
-          ease: 'power2.inOut',
+          duration: { min: 0.1, max: 0.3 },
+          delay: 0.01,
+          ease: 'power1.inOut',
+          inertia: false,
         },
         onUpdate: (self) => {
           const progress = self.progress
@@ -188,7 +201,7 @@ const ArcDialTimeline = () => {
             })
           }
 
-          /* ── Update markers ── */
+          /* ── Update markers and year labels ── */
           markerRefs.current.forEach((marker, i) => {
             if (!marker) return
             const isActive = i === activeIdx
@@ -198,7 +211,20 @@ const ArcDialTimeline = () => {
               opacity: isActive ? 1 : isPast ? 0.7 : 0.3,
               fill: isActive ? '#c8a84e' : isPast ? '#c8a84e' : '#4a5568',
             })
+
+            const yearLabel = arcYearLabelRefs.current[i]
+            if (yearLabel) {
+              gsap.set(yearLabel, {
+                opacity: isActive ? 1 : isPast ? 0.5 : 0.2,
+                fill: isActive ? '#c8a84e' : '#8a9ab5',
+              })
+            }
           })
+
+          /* ── Update bottom progress bar fill ── */
+          if (progressFillRef.current) {
+            gsap.set(progressFillRef.current, { scaleX: progress })
+          }
 
           /* ── Parallax backgrounds ── */
           bgRefs.current.forEach((bg, i) => {
@@ -240,7 +266,7 @@ const ArcDialTimeline = () => {
 
         {/* ── Left: Arc Dial SVG ── */}
         <div className="arc-dial">
-          <svg viewBox="0 0 100 700" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 140 700" preserveAspectRatio="xMidYMid meet">
             {/* Scale markings */}
             {Array.from({ length: 31 }, (_, i) => {
               const y = 30 + (i / 30) * 640
@@ -261,7 +287,7 @@ const ArcDialTimeline = () => {
             <path
               ref={arcTrackRef}
               className="arc-track"
-              d="M 25,30 C 88,180 88,520 25,670"
+              d="M 25,30 C 188,180 188,520 25,670"
               fill="none"
             />
 
@@ -269,7 +295,7 @@ const ArcDialTimeline = () => {
             <path
               ref={arcProgressRef}
               className="arc-progress"
-              d="M 25,30 C 88,180 88,520 25,670"
+              d="M 25,30 C 188,180 188,520 25,670"
               fill="none"
             />
 
@@ -283,6 +309,20 @@ const ArcDialTimeline = () => {
                 cy={30}
                 r={4}
               />
+            ))}
+
+            {/* Year labels beside markers */}
+            {timelineEvents.map((event, i) => (
+              <text
+                key={`year-${i}`}
+                ref={(el) => setArcYearRef(el, i)}
+                className="arc-year-label"
+                x={39}
+                y={34}
+                textAnchor="start"
+              >
+                {event.year}
+              </text>
             ))}
 
             {/* Glowing active indicator */}
@@ -344,7 +384,9 @@ const ArcDialTimeline = () => {
         {/* ── Progress bar at bottom ── */}
         <div className="timeline-progress-bar">
           <span>{timelineEvents[0]?.year}</span>
-          <div className="progress-track" />
+          <div className="progress-track">
+            <div className="progress-fill" ref={progressFillRef} />
+          </div>
           <span>{timelineEvents[timelineEvents.length - 1]?.year}</span>
         </div>
       </div>
