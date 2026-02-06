@@ -66,8 +66,13 @@
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
 }
 
 /* ─── Timeline Section ──────────────────── */
@@ -97,6 +102,12 @@
   opacity: 0;
   will-change: transform, opacity;
   transition: none;
+}
+
+.timeline-bg.timeline-bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .timeline-overlay {
@@ -157,7 +168,10 @@
 /* Markers */
 .arc-marker {
   fill: #4a5568;
-  transition: r 0.3s ease, opacity 0.3s ease, fill 0.3s ease;
+  transition:
+    r 0.3s ease,
+    opacity 0.3s ease,
+    fill 0.3s ease;
 }
 
 /* Year labels on the arc */
@@ -166,7 +180,9 @@
   font-size: 11px;
   fill: #8a9ab5;
   opacity: 0.2;
-  transition: opacity 0.3s ease, fill 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    fill 0.3s ease;
   pointer-events: none;
 }
 
@@ -180,8 +196,13 @@
 }
 
 @keyframes indicator-pulse {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Year display below arc */
@@ -234,7 +255,10 @@
   color: #fff;
   will-change: transform, opacity, filter;
   transform-origin: left center;
-  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
 }
 
 .timeline-card.active {

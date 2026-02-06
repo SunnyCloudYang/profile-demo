@@ -1,13 +1,13 @@
-import { useRef, useEffect, useCallback } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useGSAP } from '@gsap/react'
-import { MapPin, ExternalLink, Github, ChevronDown, Star } from 'lucide-react'
-import { timelineEvents } from '../data/timelineData'
-import { projects } from '../data/projectsData'
-import './Background.css'
+import { useRef, useCallback } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { MapPin, ExternalLink, Github, ChevronDown, Star } from "lucide-react";
+import { timelineEvents } from "../data/timelineData";
+import { projects } from "../data/projectsData";
+import "./Background.css";
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 const Background = () => {
   return (
@@ -16,22 +16,26 @@ const Background = () => {
       <ArcDialTimeline />
       <ProjectsSection />
     </div>
-  )
-}
+  );
+};
 
 /* ─── Header ────────────────────────────────────── */
 const BackgroundHeader = () => {
-  const headerRef = useRef(null)
+  const headerRef = useRef(null);
 
   useGSAP(
     () => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      tl.from('.bg-header-title', { y: 40, opacity: 0, duration: 0.8 })
-        .from('.bg-header-subtitle', { y: 25, opacity: 0, duration: 0.6 }, '-=0.4')
-        .from('.bg-header-hint', { opacity: 0, duration: 0.5 }, '-=0.2')
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(".bg-header-title", { y: 40, opacity: 0, duration: 0.8 })
+        .from(
+          ".bg-header-subtitle",
+          { y: 25, opacity: 0, duration: 0.6 },
+          "-=0.4",
+        )
+        .from(".bg-header-hint", { opacity: 0, duration: 0.5 }, "-=0.2");
     },
-    { scope: headerRef }
-  )
+    { scope: headerRef },
+  );
 
   return (
     <section className="bg-header" ref={headerRef}>
@@ -49,100 +53,100 @@ const BackgroundHeader = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
 /* ─── Arc Dial Timeline ─────────────────────────── */
 const ArcDialTimeline = () => {
-  const viewportRef = useRef(null)
-  const cardRefs = useRef([])
-  const arcTrackRef = useRef(null)
-  const arcProgressRef = useRef(null)
-  const indicatorRef = useRef(null)
-  const markerRefs = useRef([])
-  const arcYearLabelRefs = useRef([])
-  const bgRefs = useRef([])
-  const yearLabelRef = useRef(null)
-  const yearSubRef = useRef(null)
-  const progressFillRef = useRef(null)
+  const viewportRef = useRef(null);
+  const cardRefs = useRef([]);
+  const arcTrackRef = useRef(null);
+  const arcProgressRef = useRef(null);
+  const indicatorRef = useRef(null);
+  const markerRefs = useRef([]);
+  const arcYearLabelRefs = useRef([]);
+  const bgRefs = useRef([]);
+  const yearLabelRef = useRef(null);
+  const yearSubRef = useRef(null);
+  const progressFillRef = useRef(null);
 
   const setCardRef = useCallback((el, i) => {
-    cardRefs.current[i] = el
-  }, [])
+    cardRefs.current[i] = el;
+  }, []);
 
   const setMarkerRef = useCallback((el, i) => {
-    markerRefs.current[i] = el
-  }, [])
+    markerRefs.current[i] = el;
+  }, []);
 
   const setArcYearRef = useCallback((el, i) => {
-    arcYearLabelRefs.current[i] = el
-  }, [])
+    arcYearLabelRefs.current[i] = el;
+  }, []);
 
   const setBgRef = useCallback((el, i) => {
-    bgRefs.current[i] = el
-  }, [])
+    bgRefs.current[i] = el;
+  }, []);
 
   useGSAP(
     () => {
-      const N = timelineEvents.length
-      if (N === 0) return
+      const N = timelineEvents.length;
+      if (N === 0) return;
 
       /* Arc geometry parameters */
-      const ARC_RADIUS = 1000
-      const ANGLE_STEP = 0.24
-      const CARD_SPACING = 220
-      const vh = window.innerHeight
+      const ARC_RADIUS = 1000;
+      const ANGLE_STEP = 0.24;
+      const CARD_SPACING = 220;
+      const vh = window.innerHeight;
 
       /* Initialize SVG path metrics */
-      const arcTrack = arcTrackRef.current
-      const arcProgress = arcProgressRef.current
-      let pathLength = 0
+      const arcTrack = arcTrackRef.current;
+      const arcProgress = arcProgressRef.current;
+      let pathLength = 0;
 
       if (arcTrack && arcProgress) {
-        pathLength = arcTrack.getTotalLength()
-        arcProgress.style.strokeDasharray = pathLength
-        arcProgress.style.strokeDashoffset = pathLength
+        pathLength = arcTrack.getTotalLength();
+        arcProgress.style.strokeDasharray = pathLength;
+        arcProgress.style.strokeDashoffset = pathLength;
       }
 
       /* Position SVG markers and year labels along the arc path */
       if (arcTrack) {
         markerRefs.current.forEach((marker, i) => {
-          if (!marker) return
-          const t = N > 1 ? i / (N - 1) : 0
-          const point = arcTrack.getPointAtLength(t * pathLength)
-          gsap.set(marker, { attr: { cx: point.x, cy: point.y } })
+          if (!marker) return;
+          const t = N > 1 ? i / (N - 1) : 0;
+          const point = arcTrack.getPointAtLength(t * pathLength);
+          gsap.set(marker, { attr: { cx: point.x, cy: point.y } });
 
-          const yearLabel = arcYearLabelRefs.current[i]
+          const yearLabel = arcYearLabelRefs.current[i];
           if (yearLabel) {
-            gsap.set(yearLabel, { attr: { x: point.x + 14, y: point.y + 4 } })
+            gsap.set(yearLabel, { attr: { x: point.x + 14, y: point.y + 4 } });
           }
-        })
+        });
       }
 
       /* Set initial indicator position */
       if (arcTrack && indicatorRef.current) {
-        const startPoint = arcTrack.getPointAtLength(0)
+        const startPoint = arcTrack.getPointAtLength(0);
         gsap.set(indicatorRef.current, {
           attr: { cx: startPoint.x, cy: startPoint.y },
-        })
+        });
       }
 
       /* Initialize cards at starting positions */
       cardRefs.current.forEach((card, i) => {
-        if (!card) return
-        const angle = i * ANGLE_STEP
-        const curveX = ARC_RADIUS * (Math.cos(angle) - 1)
-        const baseY = i * CARD_SPACING
-        const opacity = gsap.utils.clamp(0, 1, 1.2 - i * 0.6)
-        const scale = gsap.utils.clamp(0.65, 1.0, 1.0 - i * 0.2)
-        gsap.set(card, { x: curveX, y: baseY, opacity, scale })
-        if (i === 0) card.classList.add('active')
-      })
+        if (!card) return;
+        const angle = i * ANGLE_STEP;
+        const curveX = ARC_RADIUS * (Math.cos(angle) - 1);
+        const baseY = i * CARD_SPACING;
+        const opacity = gsap.utils.clamp(0, 1, 1.2 - i * 0.6);
+        const scale = gsap.utils.clamp(0.65, 1.0, 1.0 - i * 0.2);
+        gsap.set(card, { x: curveX, y: baseY, opacity, scale });
+        if (i === 0) card.classList.add("active");
+      });
 
       /* ScrollTrigger — drives the arc dial animation */
       ScrollTrigger.create({
         trigger: viewportRef.current,
-        start: 'top top',
+        start: "top top",
         end: () => `+=${(N + 1) * vh}px`,
         pin: true,
         anticipatePin: 1,
@@ -151,26 +155,26 @@ const ArcDialTimeline = () => {
           snapTo: 1 / (N - 1),
           duration: { min: 0.1, max: 0.3 },
           delay: 0.01,
-          ease: 'power1.inOut',
+          ease: "power1.inOut",
           inertia: false,
         },
         onUpdate: (self) => {
-          const progress = self.progress
-          const centerIdx = progress * (N - 1)
-          const activeIdx = Math.round(centerIdx)
+          const progress = self.progress;
+          const centerIdx = progress * (N - 1);
+          const activeIdx = Math.round(centerIdx);
 
           /* ── Position event cards along the arc ── */
           cardRefs.current.forEach((card, i) => {
-            if (!card) return
-            const offset = i - centerIdx
-            const angle = offset * ANGLE_STEP
-            const curveX = ARC_RADIUS * (Math.cos(angle) - 1)
-            const baseY = offset * CARD_SPACING
+            if (!card) return;
+            const offset = i - centerIdx;
+            const angle = offset * ANGLE_STEP;
+            const curveX = ARC_RADIUS * (Math.cos(angle) - 1);
+            const baseY = offset * CARD_SPACING;
 
-            const absDist = Math.abs(offset)
-            const opacity = gsap.utils.clamp(0, 1, 1.15 - absDist * 0.6)
-            const scale = gsap.utils.clamp(0.65, 1.0, 1.0 - absDist * 0.2)
-            const blur = absDist > 0.6 ? (absDist - 0.6) * 5 : 0
+            const absDist = Math.abs(offset);
+            const opacity = gsap.utils.clamp(0, 1, 1.15 - absDist * 0.6);
+            const scale = gsap.utils.clamp(0.65, 1.0, 1.0 - absDist * 0.2);
+            const blur = absDist > 0.6 ? (absDist - 0.6) * 5 : 0;
 
             gsap.set(card, {
               x: curveX,
@@ -179,74 +183,74 @@ const ArcDialTimeline = () => {
               scale,
               filter: `blur(${blur}px)`,
               zIndex: 100 - Math.round(absDist * 10),
-            })
+            });
 
             if (absDist < 0.5) {
-              card.classList.add('active')
+              card.classList.add("active");
             } else {
-              card.classList.remove('active')
+              card.classList.remove("active");
             }
-          })
+          });
 
           /* ── Update SVG arc progress ── */
           if (arcProgress && pathLength) {
-            arcProgress.style.strokeDashoffset = pathLength * (1 - progress)
+            arcProgress.style.strokeDashoffset = pathLength * (1 - progress);
           }
 
           /* ── Move indicator dot along the arc ── */
           if (arcTrack && indicatorRef.current && pathLength) {
-            const point = arcTrack.getPointAtLength(progress * pathLength)
+            const point = arcTrack.getPointAtLength(progress * pathLength);
             gsap.set(indicatorRef.current, {
               attr: { cx: point.x, cy: point.y },
-            })
+            });
           }
 
           /* ── Update markers and year labels ── */
           markerRefs.current.forEach((marker, i) => {
-            if (!marker) return
-            const isActive = i === activeIdx
-            const isPast = i < activeIdx
+            if (!marker) return;
+            const isActive = i === activeIdx;
+            const isPast = i < activeIdx;
             gsap.set(marker, {
               attr: { r: isActive ? 7 : 4 },
               opacity: isActive ? 1 : isPast ? 0.7 : 0.3,
-              fill: isActive ? '#c8a84e' : isPast ? '#c8a84e' : '#4a5568',
-            })
+              fill: isActive ? "#c8a84e" : isPast ? "#c8a84e" : "#4a5568",
+            });
 
-            const yearLabel = arcYearLabelRefs.current[i]
+            const yearLabel = arcYearLabelRefs.current[i];
             if (yearLabel) {
               gsap.set(yearLabel, {
                 opacity: isActive ? 1 : isPast ? 0.5 : 0.2,
-                fill: isActive ? '#c8a84e' : '#8a9ab5',
-              })
+                fill: isActive ? "#c8a84e" : "#8a9ab5",
+              });
             }
-          })
+          });
 
           /* ── Update bottom progress bar fill ── */
           if (progressFillRef.current) {
-            gsap.set(progressFillRef.current, { scaleX: progress })
+            gsap.set(progressFillRef.current, { scaleX: progress });
           }
 
           /* ── Parallax backgrounds ── */
           bgRefs.current.forEach((bg, i) => {
-            if (!bg) return
-            const dist = Math.abs(i - centerIdx)
-            const bgOpacity = gsap.utils.clamp(0, 0.6, 0.6 - dist * 0.5)
-            const parallaxY = (i - centerIdx) * -25
-            gsap.set(bg, { opacity: bgOpacity, y: parallaxY })
-          })
+            if (!bg) return;
+            const dist = Math.abs(i - centerIdx);
+            const bgOpacity = gsap.utils.clamp(0, 0.6, 0.6 - dist * 0.5);
+            const parallaxY = (i - centerIdx) * -25;
+            gsap.set(bg, { opacity: bgOpacity, y: parallaxY });
+          });
 
           /* ── Update year display ── */
           if (yearLabelRef.current && timelineEvents[activeIdx]) {
-            yearLabelRef.current.textContent = timelineEvents[activeIdx].year
+            yearLabelRef.current.textContent = timelineEvents[activeIdx].year;
           }
           if (yearSubRef.current && timelineEvents[activeIdx]) {
-            yearSubRef.current.textContent = timelineEvents[activeIdx].category
+            yearSubRef.current.textContent = timelineEvents[activeIdx].category;
           }
         },
-      })
+      });
     },
-    { scope: viewportRef }
-  )
+    { scope: viewportRef },
+  );
 
   return (
     <section className="timeline-section">
@@ -256,9 +260,13 @@ const ArcDialTimeline = () => {
           {timelineEvents.map((event, i) => (
             <div
               key={i}
-              className="timeline-bg"
+              className={`timeline-bg ${event.image ? "timeline-bg-image" : ""}`}
               ref={(el) => setBgRef(el, i)}
-              style={{ background: event.bgGradient }}
+              style={
+                event.image
+                  ? { backgroundImage: `url(${event.image})` }
+                  : { background: event.bgGradient }
+              }
             />
           ))}
           <div className="timeline-overlay" />
@@ -269,8 +277,8 @@ const ArcDialTimeline = () => {
           <svg viewBox="0 0 140 700" preserveAspectRatio="xMidYMid meet">
             {/* Scale markings */}
             {Array.from({ length: 31 }, (_, i) => {
-              const y = 30 + (i / 30) * 640
-              const isMajor = i % 5 === 0
+              const y = 30 + (i / 30) * 640;
+              const isMajor = i % 5 === 0;
               return (
                 <line
                   key={`scale-${i}`}
@@ -278,9 +286,9 @@ const ArcDialTimeline = () => {
                   y1={y}
                   x2={isMajor ? 18 : 12}
                   y2={y}
-                  className={`arc-scale-mark ${isMajor ? 'major' : 'minor'}`}
+                  className={`arc-scale-mark ${isMajor ? "major" : "minor"}`}
                 />
-              )
+              );
             })}
 
             {/* Arc track (background) */}
@@ -391,45 +399,45 @@ const ArcDialTimeline = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
 /* ─── Projects Section ──────────────────────────── */
 const ProjectsSection = () => {
-  const sectionRef = useRef(null)
-  const projectRefs = useRef([])
+  const sectionRef = useRef(null);
+  const projectRefs = useRef([]);
 
   const setProjectRef = useCallback((el, i) => {
-    projectRefs.current[i] = el
-  }, [])
+    projectRefs.current[i] = el;
+  }, []);
 
   useGSAP(
     () => {
       projectRefs.current.forEach((card) => {
-        if (!card) return
+        if (!card) return;
         gsap.from(card, {
           y: 60,
           opacity: 0,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: "power2.out",
           scrollTrigger: {
             trigger: card,
-            start: 'top 88%',
-            toggleActions: 'play none none reverse',
+            start: "top 88%",
+            toggleActions: "play none none reverse",
           },
-        })
-      })
+        });
+      });
     },
-    { scope: sectionRef }
-  )
+    { scope: sectionRef },
+  );
 
   return (
     <section className="projects-section" ref={sectionRef}>
       <div className="section-container">
         <h2 className="section-title">Research Projects</h2>
         <p className="section-subtitle">
-          Open-source tools and frameworks advancing machine learning, NLP, and AI
-          interpretability research
+          Open-source tools and frameworks advancing machine learning, NLP, and
+          AI interpretability research
         </p>
         <div className="projects-grid">
           {projects.map((project, i) => (
@@ -438,7 +446,10 @@ const ProjectsSection = () => {
               className="project-card"
               ref={(el) => setProjectRef(el, i)}
             >
-              <div className="project-icon" style={{ background: project.gradient }}>
+              <div
+                className="project-icon"
+                style={{ background: project.gradient }}
+              >
                 <span>{project.icon}</span>
               </div>
               <div className="project-body">
@@ -461,13 +472,23 @@ const ProjectsSection = () => {
                 </div>
                 <div className="project-links">
                   {project.github && (
-                    <a href={project.github} target="_blank" rel="noopener noreferrer" className="project-link">
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-link"
+                    >
                       <Github size={15} />
                       Code
                     </a>
                   )}
                   {project.demo && (
-                    <a href={project.demo} target="_blank" rel="noopener noreferrer" className="project-link">
+                    <a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-link"
+                    >
                       <ExternalLink size={15} />
                       Demo
                     </a>
@@ -479,7 +500,7 @@ const ProjectsSection = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Background
+export default Background;
