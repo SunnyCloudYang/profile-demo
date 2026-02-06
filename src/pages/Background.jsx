@@ -1,13 +1,34 @@
 import { useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useGSAP } from "@gsap/react";
-import { MapPin, ExternalLink, Github, ChevronDown, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  MapPin,
+  ExternalLink,
+  Github,
+  ChevronDown,
+  Star,
+  ArrowRight,
+} from "lucide-react";
 import { timelineEvents } from "../data/timelineData";
 import { projects } from "../data/projectsData";
 import "./Background.css";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+/*
+ * Timeline arc shape switch — change to 'line' for a vertical straight line,
+ * or keep 'curve' for the original curved arc.
+ */
+const ARC_SHAPE = "line"; // 'curve' | 'line'
+
+/* SVG path data for each shape variant */
+const ARC_PATH =
+  ARC_SHAPE === "curve"
+    ? "M 25,30 C 188,180 188,520 25,670"
+    : "M 25,30 L 25,670";
 
 const Background = () => {
   return (
@@ -69,6 +90,7 @@ const ArcDialTimeline = () => {
   const yearLabelRef = useRef(null);
   const yearSubRef = useRef(null);
   const progressFillRef = useRef(null);
+  const stRef = useRef(null);
 
   const setCardRef = useCallback((el, i) => {
     cardRefs.current[i] = el;
@@ -86,15 +108,28 @@ const ArcDialTimeline = () => {
     bgRefs.current[i] = el;
   }, []);
 
+  const handleYearClick = useCallback((idx) => {
+    const st = stRef.current;
+    if (!st) return;
+    const N = timelineEvents.length;
+    if (N <= 1) return;
+    const targetScroll = st.start + (idx / (N - 1)) * (st.end - st.start);
+    gsap.to(window, {
+      scrollTo: { y: targetScroll, autoKill: false },
+      duration: 0.6,
+      ease: "power2.inOut",
+    });
+  }, []);
+
   useGSAP(
     () => {
       const N = timelineEvents.length;
       if (N === 0) return;
 
       /* Arc geometry parameters */
-      const ARC_RADIUS = 1000;
-      const ANGLE_STEP = 0.24;
-      const CARD_SPACING = 220;
+      const ARC_RADIUS = ARC_SHAPE === "curve" ? 1000 : 0;
+      const ANGLE_STEP = ARC_SHAPE === "curve" ? 0.24 : 0;
+      const CARD_SPACING = 250;
       const vh = window.innerHeight;
 
       /* Initialize SVG path metrics */
@@ -143,8 +178,14 @@ const ArcDialTimeline = () => {
         if (i === 0) card.classList.add("active");
       });
 
+      /* Set initial background opacity */
+      bgRefs.current.forEach((bg, i) => {
+        if (!bg) return;
+        gsap.set(bg, { opacity: i === 0 ? 1 : 0 });
+      });
+
       /* ScrollTrigger — drives the arc dial animation */
-      ScrollTrigger.create({
+      stRef.current = ScrollTrigger.create({
         trigger: viewportRef.current,
         start: "top top",
         end: () => `+=${(N + 1) * vh}px`,
@@ -234,8 +275,8 @@ const ArcDialTimeline = () => {
           bgRefs.current.forEach((bg, i) => {
             if (!bg) return;
             const dist = Math.abs(i - centerIdx);
-            const bgOpacity = gsap.utils.clamp(0, 0.6, 0.6 - dist * 0.5);
-            const parallaxY = (i - centerIdx) * -25;
+            const bgOpacity = gsap.utils.clamp(0, 1, 1 - dist * 0.95);
+            const parallaxY = (i - centerIdx) * 180;
             gsap.set(bg, { opacity: bgOpacity, y: parallaxY });
           });
 
@@ -275,27 +316,49 @@ const ArcDialTimeline = () => {
         {/* ── Left: Arc Dial SVG ── */}
         <div className="arc-dial">
           <svg viewBox="0 0 140 700" preserveAspectRatio="xMidYMid meet">
-            {/* Scale markings */}
-            {Array.from({ length: 31 }, (_, i) => {
-              const y = 30 + (i / 30) * 640;
-              const isMajor = i % 5 === 0;
-              return (
-                <line
-                  key={`scale-${i}`}
-                  x1={isMajor ? 0 : 5}
-                  y1={y}
-                  x2={isMajor ? 18 : 12}
-                  y2={y}
-                  className={`arc-scale-mark ${isMajor ? "major" : "minor"}`}
-                />
-              );
-            })}
+            {/* Scale markings — major ticks aligned with event positions */}
+            {(() => {
+              const N = timelineEvents.length;
+              const MINOR_PER_GAP = 4;
+              const marks = [];
+
+              for (let i = 0; i < N; i++) {
+                const y = 30 + (i / (N - 1)) * 640;
+                marks.push(
+                  <line
+                    key={`major-${i}`}
+                    x1={0}
+                    y1={y}
+                    x2={18}
+                    y2={y}
+                    className="arc-scale-mark major"
+                  />,
+                );
+
+                if (i < N - 1) {
+                  for (let m = 1; m <= MINOR_PER_GAP; m++) {
+                    const my = y + (m / (MINOR_PER_GAP + 1)) * (640 / (N - 1));
+                    marks.push(
+                      <line
+                        key={`minor-${i}-${m}`}
+                        x1={5}
+                        y1={my}
+                        x2={12}
+                        y2={my}
+                        className="arc-scale-mark minor"
+                      />,
+                    );
+                  }
+                }
+              }
+              return marks;
+            })()}
 
             {/* Arc track (background) */}
             <path
               ref={arcTrackRef}
               className="arc-track"
-              d="M 25,30 C 188,180 188,520 25,670"
+              d={ARC_PATH}
               fill="none"
             />
 
@@ -303,7 +366,7 @@ const ArcDialTimeline = () => {
             <path
               ref={arcProgressRef}
               className="arc-progress"
-              d="M 25,30 C 188,180 188,520 25,670"
+              d={ARC_PATH}
               fill="none"
             />
 
@@ -319,15 +382,16 @@ const ArcDialTimeline = () => {
               />
             ))}
 
-            {/* Year labels beside markers */}
+            {/* Year labels beside markers (clickable) */}
             {timelineEvents.map((event, i) => (
               <text
                 key={`year-${i}`}
                 ref={(el) => setArcYearRef(el, i)}
-                className="arc-year-label"
+                className="arc-year-label arc-year-clickable"
                 x={39}
                 y={34}
                 textAnchor="start"
+                onClick={() => handleYearClick(i)}
               >
                 {event.year}
               </text>
@@ -385,6 +449,13 @@ const ArcDialTimeline = () => {
                   ))}
                 </div>
               )}
+              <Link
+                to={`/background/event/${event.year}`}
+                className="card-see-more"
+              >
+                See more
+                <ArrowRight size={16} />
+              </Link>
             </div>
           ))}
         </div>

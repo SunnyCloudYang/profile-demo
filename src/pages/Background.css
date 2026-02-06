@@ -115,9 +115,9 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(15, 23, 36, 0.88) 0%,
-    rgba(26, 35, 50, 0.82) 50%,
-    rgba(15, 23, 36, 0.9) 100%
+    rgba(15, 23, 36, 0.7) 0%,
+    rgba(26, 35, 50, 0.75) 50%,
+    rgba(15, 23, 36, 0.5) 100%
   );
   z-index: 1;
 }
@@ -183,7 +183,16 @@
   transition:
     opacity 0.3s ease,
     fill 0.3s ease;
-  pointer-events: none;
+}
+
+.arc-year-clickable {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.arc-year-clickable:hover {
+  fill: #c8a84e !important;
+  opacity: 1 !important;
 }
 
 /* Active indicator (glowing dot) */
@@ -245,13 +254,13 @@
 .timeline-card {
   position: absolute;
   width: 100%;
-  max-width: 540px;
+  max-width: 640px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 2rem 2.2rem;
+  border-radius: 18px;
+  padding: 2.5rem 2.75rem;
   color: #fff;
   will-change: transform, opacity, filter;
   transform-origin: left center;
@@ -274,38 +283,38 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .card-year-badge {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--color-accent);
   background: rgba(200, 168, 78, 0.12);
-  padding: 0.25rem 0.7rem;
-  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
   letter-spacing: 0.04em;
 }
 
 .card-category-badge {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.2rem 0.6rem;
-  border-radius: 3px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
 }
 
 /* Card content */
 .card-title {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   line-height: 1.35;
 }
 
@@ -313,7 +322,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.55);
   margin-bottom: 1rem;
 }
@@ -324,28 +333,54 @@
 }
 
 .card-description {
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 /* Tags */
 .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
 }
 
 .card-tag {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: rgba(200, 168, 78, 0.85);
   background: rgba(200, 168, 78, 0.08);
   border: 1px solid rgba(200, 168, 78, 0.15);
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.65rem;
   border-radius: 20px;
   letter-spacing: 0.02em;
+}
+
+/* See more button */
+.card-see-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: rgba(200, 168, 78, 0.12);
+  border: 1px solid rgba(200, 168, 78, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.card-see-more:hover {
+  background: rgba(200, 168, 78, 0.2);
+  border-color: rgba(200, 168, 78, 0.5);
+  color: #e6c04a;
 }
 
 /* ─── Progress bar at bottom ────────────── */
