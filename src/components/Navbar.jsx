@@ -1,20 +1,20 @@
-import { NavLink } from 'react-router-dom'
-import { FileText, Menu, X } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import './Navbar.css'
+import { NavLink } from "react-router-dom";
+import { FileText, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import "./Navbar.css";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+    <nav className={`navbar ${isScrolled ? "scrolled" : ""}`}>
       <div className="nav-container">
         <NavLink to="/" className="nav-logo">
           <span className="logo-accent">A.</span>
@@ -29,18 +29,18 @@ const Navbar = () => {
           {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <div className={`nav-links ${isMobileOpen ? 'open' : ''}`}>
+        <div className={`nav-links ${isMobileOpen ? "open" : ""}`}>
           <NavLink
             to="/"
             end
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
             onClick={() => setIsMobileOpen(false)}
           >
             Homepage
           </NavLink>
           <NavLink
             to="/background"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
             onClick={() => setIsMobileOpen(false)}
           >
             Background
@@ -58,7 +58,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
